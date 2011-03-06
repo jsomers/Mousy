@@ -1,0 +1,1 @@
+Uses the HTML5 <video> tag and so might only work in Chrome. Just start the video and wiggle your mouse: you should see a graph dynamically generated to the right of the video that shows just how hard you're wiggling at each second.
