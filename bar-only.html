@@ -54,13 +54,6 @@
 					};
 					setTimeout("measure(" + xpos + ", " + ypos + ", \"" + new_dir + "\")", 50);
 				}
-				drain_ticks = function() {
-					upticks -= 1;
-					if (upticks < 0) { upticks = 0 };
-					$("#upticks").html( upticks );
-					setTimeout("drain_ticks()", 100);
-				}
-				drain_ticks();
 				measure(0, 0, "ne");
 				$(document).keypress(function(k) {
 					if (k.keyCode == '107' || k.keyCode == '106') {
