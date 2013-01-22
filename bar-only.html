@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+  <head>
+		<title>Sandbox for mouse tracking</title>
+		<link rel="stylesheet" href="./mousy/demo.css" type="text/css" media="screen">
+        <link rel="stylesheet" href="./mousy/demo-print.css" type="text/css" media="print">
+		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.3/jquery.min.js"></script>
+		<style type="text/css" media="screen">
+            body {
+                background: #000;
+            }
+            #holder {
+                height: 250px;
+                margin: -125px 0 0 -400px;
+                width: 800px;
+            }
+        </style>
+		<script type="text/javascript">
+			xpos = 0;
+			ypos = 0;
+			speed = 0;
+			$(document).ready(function() {
+				$(document).mousemove(function(e) {
+					xpos = e.pageX
+					ypos = 1000 - e.pageY
+					$("#pos").html(xpos + ", " + ypos);
+				});
+				upticks = 0;
+				downticks = 0;
+				measure = function(x, y, dir) {
+					var new_dir = "";
+					var dis = 0;
+					if (xpos > x && ypos > y) {
+						new_dir = "ne"
+					} else if (xpos > x && ypos < y) {
+						new_dir = "se"
+					} else if (xpos < x && ypos > y) {
+						new_dir = "nw"
+					} else if (xpos < x && ypos < y) {
+						new_dir = "sw"
+					};
+					if (new_dir != dir) {
+						var cur = speed;
+						upticks += 1;
+						downticks = 0;
+						cur += 10 * (0.4 * upticks);
+						if (cur > 500) { cur = 500 };
+						speed = cur;
+
+						$("#bar").animate({
+							width: cur,
+						}, 50, "linear", function() {});
+						$("#bar").css("opacity", (cur / 500.0));
+					};
+					setTimeout("measure(" + xpos + ", " + ypos + ", \"" + new_dir + "\")", 50);
+				}
+				drain_ticks = function() {
+					upticks -= 1;
+					if (upticks < 0) { upticks = 0 };
+					$("#upticks").html( upticks );
+					setTimeout("drain_ticks()", 100);
+				}
+				drain_ticks();
+				measure(0, 0, "ne");
+				$(document).keypress(function(k) {
+					if (k.keyCode == '107' || k.keyCode == '106') {
+						var cur = speed;
+						cur += 5;
+						speed = cur;
+
+						$("#bar").animate({
+							width: cur,
+						}, 50, "linear", function() {});
+						$("#bar").css("opacity", (cur / 200.0));
+					}
+				});
+				drain = function() {
+					var cur = speed;
+					if (cur > 20) { downticks += 1 };
+					cur -= 1 * (downticks * 0.4);
+					if (cur < 0) {cur = 0};
+					speed = cur;
+
+					$("#bar").animate({
+						width: cur,
+					}, 0, "linear", function() {});
+					$("#bar").css("opacity", (cur / 400.0));
+					setTimeout("drain()", 35);
+				}
+				drain();				
+			});
+			
+		</script>
+	</head>
+	<body>
+		<div id="bar" style="background-color: #00cc22; opacity: 1.0; height:20px; width: 0px; margin-top: 20px;"></div>
+		
+        <div id="holder" style="position: relative; left: 950px; top: -150px;"></div>
+	</body>
+</html>
